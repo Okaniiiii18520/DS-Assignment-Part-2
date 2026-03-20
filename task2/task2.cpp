@@ -238,7 +238,7 @@ void task2Interface(CircularQueue& log, const string& learnerId)
 				log.enqueue(Activity(n->id, learnerId, n->topic, percentScore));
 				updateLearnerActivity(learnerId, n->topic, percentScore);
 				cout << "All the questions in this activity are completed! Well Done!" << endl
-				<< "Score: " << act.nextAct() << endl << endl
+				<< "Score: " << percentScore << "%" << endl
 				<< "Enter number to select operation: " << endl
 				<< "1. " << (act.getCur() ? "Next Activity" : "Finish" ) << "\n2. Restart\n3. Quit\nChoice: ";
 				cin >> input;

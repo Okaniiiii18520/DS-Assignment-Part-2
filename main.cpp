@@ -167,7 +167,14 @@ void runTask1()
         {
             cout << "Enter learner ID to exit: ";
             int id = getValidInt();
-            session.removeLearner(id);
+            if (id <= 0)
+            {
+                cout << "Invalid input.\n";
+            }
+            else
+            {
+                session.removeLearner(id);
+    }
         }
         else if (choice == 4)
         {
@@ -191,11 +198,30 @@ void runTask2()
     cout << "\n--- Task 2: Activity Navigation & Session Flow ---\n";
     cout << "Enter your Learner ID: ";
     getline(cin, learnerId);
-    int start = learnerId.find_first_not_of(" \t\r\n");
-    int end = learnerId.find_last_not_of(" \t\r\n");
+    size_t start = learnerId.find_first_not_of(" \t\r\n");
+    size_t end   = learnerId.find_last_not_of(" \t\r\n");
     if (start != string::npos)
     {
         learnerId = learnerId.substr(start, end - start + 1);
+    }
+    else
+    {
+        cout << "Invalid input.\n";
+        return;
+    }
+    bool isNumeric = !learnerId.empty();
+    for (char c : learnerId)
+    {
+        if (!isdigit(c))
+        {
+            isNumeric = false;
+            break;
+        }
+    }
+    if (!isNumeric)
+    {
+        cout << "Invalid input.\n";
+        return;
     }
     if (findLearnerIndex(learnerId) == -1)
     {
