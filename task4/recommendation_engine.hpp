@@ -13,9 +13,8 @@ public:
             lp.recommendation = "Scores are critically low. Restart foundational activities and seek tutor support immediately.";
             return;
         }
-        if (lp.totalAttempts > 0 &&
-            (double)lp.failedAttempts / lp.totalAttempts >= 0.60)
-            {
+        if (lp.totalAttempts > 0 && (double)lp.failedAttempts / lp.totalAttempts >= 0.60)
+        {
             lp.recommendation = "Too many failed attempts. Attempt easier difficulty activities before progressing.";
             return;
         }

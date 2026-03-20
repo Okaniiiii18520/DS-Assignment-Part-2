@@ -8,7 +8,6 @@
 #include <limits>
 using namespace std;
 
-
 Stack::Stack() = default;
 Stack::~Stack()
 {
