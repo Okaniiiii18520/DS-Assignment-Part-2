@@ -90,7 +90,7 @@ void CircularQueue::exportCSV(string filename)
         cout << "Error opening file.\n";
         return;
     }
-    file << "ActivityID;LearnerID;Topic;Score;Difficulty\n";
+    file << "ActivityID;LearnerID;Topic;Score\n";
     int i = front;
     for (int c = 0; c < count; c++)
     {

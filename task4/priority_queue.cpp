@@ -128,10 +128,10 @@ void PriorityQueue::display()
     {
         LearnerProfile lp = temp.extractMax();
         cout << " Rank #" << rank++ << "\n";
-        cout << "  ID          : " << lp.id << "\n";
-        cout << "  Name        : " << lp.name << "\n";
-        cout << "  Risk Score  : " << lp.riskScore << "\n";
-        cout << "  Recommend.  : " << lp.recommendation << "\n";
+        cout << "  ID             : " << lp.id << "\n";
+        cout << "  Name           : " << lp.name << "\n";
+        cout << "  Risk Score     : " << lp.riskScore << "\n";
+        cout << "  Recommendaion  : " << lp.recommendation << "\n";
         cout << "  =========================================================\n";
     }
 }

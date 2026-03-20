@@ -5,6 +5,7 @@
 #include <cctype>
 #include "task2.hpp"
 #include "../task3/circular_queue.hpp"
+#include <limits>
 using namespace std;
 
 Stack::Stack() = default;
@@ -129,7 +130,7 @@ Activities::Activities()
 bool Activities::nextQuestion(const string& ans)
 {
 	Node* n = pre.peek();
-	bool result = (n->questions[n->completed].answer == ans);
+	bool result = (tolower(n->questions[n->completed].answer[0]) == tolower(ans[0]));
 	n->score += result;
 	n->completed++;
 	return result;
@@ -154,7 +155,7 @@ bool Activities::undo()
 		return false; 
 	}
 	temp->score = 0;
-	temp->completed = false;
+	temp->completed = 0;
 	pre.push(temp);
 	return true;
 }
@@ -192,8 +193,9 @@ void task2Interface(CircularQueue& log, const string& learnerId)
 			{
 				cout << "Welcome to " + n->topic + " practice!" << endl
 				<< "Enter number to select operation: " << endl
-				<< "1. Start\n2. Restart Further\n3. Quit" << endl;
-				getline(cin, input);
+				<< "1. Start\n2. Restart Further\n3. Quit\nChoice: " << endl;
+				cin >> input;
+				cin.ignore(numeric_limits<streamsize>::max(), '\n');
 				switch(stoi(input))
 				{
 					case 1:
@@ -253,7 +255,7 @@ void task2Interface(CircularQueue& log, const string& learnerId)
 			getline(cin, input);
 			cout << (act.nextQuestion(input) ? "Congratulations, your answer is correct!" : "Unfortunately, you got this wrong.") << endl << endl;
 		}
-		catch (exception ex)
+		catch (exception& ex)
 		{
 			cout << "Invalid input! Please try again" << endl;
 		}

@@ -12,7 +12,23 @@
 #include <limits>
 using namespace std;
 
+int getValidInt()
+{
+    int value;
+    cin >> value;
+    if (cin.fail())
+    {
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        return -1;
+    }
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    return value;
+}
+
 CircularQueue activityLog(10);
+Queue waitingQueue;
+Session session;
 LearnerProfile registeredLearners[MAX_PRIORITY_QUEUE];
 int learnerCount = 0;
 int findLearnerIndex(const string& learnerId)
@@ -74,8 +90,6 @@ void updateLearnerActivity(const string& learnerId, const string& topic, int sco
 
 void runTask1()
 {
-    Queue waitingQueue;
-    Session session;
     int choice;
     do
     {
@@ -87,33 +101,43 @@ void runTask1()
         cout << "5. Show Active Session\n";
         cout << "6. Back to Main Menu\n";
         cout << "Choice: ";
-        cin >> choice;
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        choice = getValidInt();
         if (choice == 1)
         {
             Learner l;
             cout << "Enter ID: ";
-            cin >> l.id;
-            cout << "Enter Name: ";
-            cin >> l.name;
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            if (learnerCount < MAX_PRIORITY_QUEUE)
+            l.id = getValidInt();
+            if (findLearnerIndex(to_string(l.id)) != -1)
             {
-                LearnerProfile lp;
-                lp.id                  = l.id;
-                lp.name                = l.name;
-                lp.scoreCount          = 0;
-                lp.failedAttempts      = 0;
-                lp.totalAttempts       = 0;
-                lp.topicCount          = 0;
-                lp.timeSpentMinutes    = 0;
-                lp.activitiesCompleted = 0;
-                lp.riskScore           = 0;
-                lp.recommendation      = "No activity data yet.";
-                registeredLearners[learnerCount++] = lp;
-                cout << "Learner registered successfully.\n";
+                cout << "A learner with ID " << l.id << " is already registered.\n";
             }
-            waitingQueue.enqueue(l);
+            else
+            {
+                cout << "Enter Name: ";
+                cin >> l.name;
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                if (learnerCount < MAX_PRIORITY_QUEUE)
+                {
+                    LearnerProfile lp;
+                    lp.id = l.id;
+                    lp.name = l.name;
+                    lp.scoreCount = 0;
+                    lp.failedAttempts = 0;
+                    lp.totalAttempts = 0;
+                    lp.topicCount = 0;
+                    lp.timeSpentMinutes = 0;
+                    lp.activitiesCompleted = 0;
+                    lp.riskScore  = 0;
+                    lp.recommendation = "No activity data yet.";
+                    registeredLearners[learnerCount++] = lp;
+                    waitingQueue.enqueue(l);
+                    cout << "Learner registered successfully.\n";
+                }
+                else
+                {
+                    cout << "System is full. Cannot register more learners.\n";
+                }
+            }
         }
         else if (choice == 2)
         {
@@ -130,9 +154,8 @@ void runTask1()
         }
         else if (choice == 3)
         {
-            int id;
             cout << "Enter learner ID to exit: ";
-            cin >> id;
+            int id = getValidInt();
             session.removeLearner(id);
         }
         else if (choice == 4)
@@ -142,6 +165,10 @@ void runTask1()
         else if (choice == 5)
         {
             session.display();
+        }
+        else if (choice != 6)
+        {
+            cout << "Invalid input.\n";
         }
     }
     while (choice != 6);
@@ -153,6 +180,18 @@ void runTask2()
     cout << "\n--- Task 2: Activity Navigation & Session Flow ---\n";
     cout << "Enter your Learner ID: ";
     getline(cin, learnerId);
+    int start = learnerId.find_first_not_of(" \t\r\n");
+    int end = learnerId.find_last_not_of(" \t\r\n");
+    if (start != string::npos)
+    {
+        learnerId = learnerId.substr(start, end - start + 1);
+    }
+    if (findLearnerIndex(learnerId) == -1)
+    {
+        cout << "Learner ID \"" << learnerId << "\" is not registered.\n";
+        cout << "Please register a learner first.\n";
+        return;
+    }
     task2Interface(activityLog, learnerId);
 }
 
@@ -167,8 +206,7 @@ void runTask3()
         cout << "3. Export Logs to CSV\n";
         cout << "4. Back to Main Menu\n";
         cout << "Choice: ";
-        cin >> choice;
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        choice = getValidInt();
         if (choice == 1)
         {
             activityLog.display();
@@ -186,6 +224,10 @@ void runTask3()
             cout << "Enter filename (e.g. activity_log.csv): ";
             getline(cin, filename);
             activityLog.exportCSV(filename);
+        }
+        else if (choice != 4)
+        {
+            cout << "Invalid input.\n";
         }
     }
     while (choice != 4);
@@ -221,12 +263,10 @@ void runTask4()
         cout << "\n--- Task 4: At-Risk Learner Priority & Recommendation ---\n";
         cout << "1. Load registered learners\n";
         cout << "2. Display all at-risk learners\n";
-        cout << "3. View highest-risk learner\n";
-        cout << "4. Export at-risk list to CSV\n";
-        cout << "5. Back to Main Menu\n";
+        cout << "3. Export at-risk list to CSV\n";
+        cout << "4. Back to Main Menu\n";
         cout << "Choice: ";
-        cin >> choice;
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        choice = getValidInt();
         if (choice == 1)
         {
             loadRegisteredLearners(pq);
@@ -237,29 +277,17 @@ void runTask4()
         }
         else if (choice == 3)
         {
-            if (!pq.isEmpty())
-            {
-                LearnerProfile top = pq.peekMax();
-                cout << "\nHighest-risk learner:\n";
-                cout << "  ID         : " << top.id << "\n";
-                cout << "  Name       : " << top.name << "\n";
-                cout << "  Risk Score : " << top.riskScore << "\n";
-                cout << "  Action     : " << top.recommendation << "\n";
-            }
-            else
-            {
-                cout << "Queue is empty.\n";
-            }
-        }
-        else if (choice == 4)
-        {
             string filename;
             cout << "Enter filename (e.g. at_risk_report.csv): ";
             getline(cin, filename);
             Exporter::exportToCSV(pq, filename);
         }
+        else if (choice != 4)
+        {
+            cout << "Invalid input.\n";
+        }
     }
-    while (choice != 5);
+    while (choice != 4);
 }
 
 int main()
@@ -279,8 +307,7 @@ int main()
         cout << "5. Exit\n";
         cout << "===============================================\n";
         cout << "Choice: ";
-        cin >> choice;
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        choice = getValidInt();
         if (choice == 1)
         {
             runTask1();
