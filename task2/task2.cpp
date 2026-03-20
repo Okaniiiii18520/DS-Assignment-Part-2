@@ -8,6 +8,7 @@
 #include <limits>
 using namespace std;
 
+
 Stack::Stack() = default;
 Stack::~Stack()
 {
@@ -127,13 +128,22 @@ Activities::Activities()
 	pre.load();
 }
 
+string lower(string input)
+{
+	for (auto& i : input)
+	{
+		i = static_cast<char>(tolower(static_cast<unsigned char>(i)));
+	}
+	return input;
+}
+
 bool Activities::nextQuestion(const string& ans)
 {
-	Node* n = pre.peek();
-	bool result = (tolower(n->questions[n->completed].answer[0]) == tolower(ans[0]));
-	n->score += result;
-	n->completed++;
-	return result;
+    Node* n = pre.peek();
+    bool result = (lower(n->questions[n->completed].answer) == lower(ans));
+    n->score += result;
+    n->completed++;
+    return result;
 }
 
 int Activities::nextAct()
@@ -165,15 +175,6 @@ Node* Activities::getCur()
 	return pre.peek();
 }
 
-string lower(string input)
-{
-	for (auto& i : input)
-	{
-		i = static_cast<char>(tolower(static_cast<unsigned char>(i)));
-	}
-	return input;
-}
-
 void task2Interface(CircularQueue& log, const string& learnerId)
 {
 	Activities act;
@@ -193,8 +194,9 @@ void task2Interface(CircularQueue& log, const string& learnerId)
 			{
 				cout << "Welcome to " + n->topic + " practice!" << endl
 				<< "Enter number to select operation: " << endl
-				<< "1. Start\n2. Restart Further\n3. Quit\nChoice: " << endl;
+				<< "1. Start\n2. Restart Further\n3. Quit\nChoice: ";
 				cin >> input;
+				cout << endl;
 				cin.ignore(numeric_limits<streamsize>::max(), '\n');
 				switch(stoi(input))
 				{
@@ -221,13 +223,15 @@ void task2Interface(CircularQueue& log, const string& learnerId)
 			}
 			if (n->completed > n->totalQuestion - 1)
 			{
-				log.enqueue(Activity(n->id, learnerId, n->topic, n->score));
-				updateLearnerActivity(learnerId, n->topic, n->score);
+				int percentScore = (n->totalQuestion > 0) ? (n->score * 100) / n->totalQuestion: 0;
+				log.enqueue(Activity(n->id, learnerId, n->topic, percentScore));
+				updateLearnerActivity(learnerId, n->topic, percentScore);
 				cout << "All the questions in this activity are completed! Well Done!" << endl
 				<< "Score: " << act.nextAct() << endl << endl
 				<< "Enter number to select operation: " << endl
-				<< "1. " << (act.getCur() ? "Next Activity" : "Finish" ) << "\n2. Restart\n3. Quit" << endl;
+				<< "1. " << (act.getCur() ? "Next Activity" : "Finish" ) << "\n2. Restart\n3. Quit\nChoice: ";
 				getline(cin, input);
+				cout << endl;
 				switch(stoi(input))
 				{
 					case 1:
