@@ -22,7 +22,13 @@ int getValidInt()
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
         return -1;
     }
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    char leftover;
+    cin.get(leftover);
+    if (leftover != '\n')
+    {
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        return -1;
+    }
     return value;
 }
 
@@ -107,10 +113,10 @@ void runTask1()
             Learner l;
             cout << "Enter ID: ";
             l.id = getValidInt();
-            while (l.id <= 0)
+            if (l.id <= 0)
             {
                 cout << "Invalid input.\n";
-                l.id = getValidInt();
+                continue;
             }
             if (findLearnerIndex(to_string(l.id)) != -1)
             {

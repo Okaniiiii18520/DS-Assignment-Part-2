@@ -53,6 +53,14 @@ Node* Stack::peek()
 	}
 }
 
+bool isValidMenuInput(const string& s)
+{
+    if (s.empty()) return false;
+    for (char c : s)
+        if (!isdigit(c)) return false;
+    return true;
+}
+
 bool Stack::load()
 {
 	ifstream file("data/data.csv");
@@ -195,8 +203,12 @@ void task2Interface(CircularQueue& log, const string& learnerId)
 				<< "Enter number to select operation: " << endl
 				<< "1. Start\n2. Restart Further\n3. Quit\nChoice: ";
 				cin >> input;
-				cout << endl;
 				cin.ignore(numeric_limits<streamsize>::max(), '\n');
+				if (!isValidMenuInput(input))
+				{
+					cout << "Invalid input." << endl;
+					continue;
+				}
 				switch(stoi(input))
 				{
 					case 1:
@@ -215,7 +227,7 @@ void task2Interface(CircularQueue& log, const string& learnerId)
 					}
 					default:
 					{
-						cout << "Invalid input! Please try again" << endl;
+						cout << "Invalid input." << endl;
 						continue;
 					}
 				}
@@ -229,8 +241,13 @@ void task2Interface(CircularQueue& log, const string& learnerId)
 				<< "Score: " << act.nextAct() << endl << endl
 				<< "Enter number to select operation: " << endl
 				<< "1. " << (act.getCur() ? "Next Activity" : "Finish" ) << "\n2. Restart\n3. Quit\nChoice: ";
-				getline(cin, input);
-				cout << endl;
+				cin >> input;
+				cin.ignore(numeric_limits<streamsize>::max(), '\n');
+				if (!isValidMenuInput(input))
+				{
+					cout << "Invalid input." << endl;
+					continue;
+				}
 				switch(stoi(input))
 				{
 					case 1:
@@ -249,7 +266,7 @@ void task2Interface(CircularQueue& log, const string& learnerId)
 					}
 					default:
 					{
-						cout << "Invalid input! Please try again" << endl;
+						cout << "Invalid input." << endl;
 						continue;
 					}
 				}
@@ -260,7 +277,7 @@ void task2Interface(CircularQueue& log, const string& learnerId)
 		}
 		catch (exception& ex)
 		{
-			cout << "Invalid input! Please try again" << endl;
+			cout << "Invalid input." << endl;
 		}
 	}
 	return;
