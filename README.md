@@ -25,7 +25,7 @@ A prototype system built in C++ that simulates how students interact with progra
 
 **Purpose:**
 - Demonstrates practical application of core data structures in a real-world learning management scenario.
-- Supports personalised learning by tracking performance, logging activity, and surfacing at-risk learners with targeted recommendations.
+- Supports personalized learning by tracking performance, logging activity, and surfacing at-risk learners with targeted recommendations.
 
 ## 👥 Contributors
 

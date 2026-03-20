@@ -298,9 +298,9 @@ void runTask4()
     do
     {
         cout << "\n--- Task 4: At-Risk Learner Priority & Recommendation ---\n";
-        cout << "1. Load registered learners\n";
-        cout << "2. Display all at-risk learners\n";
-        cout << "3. Export at-risk list to CSV\n";
+        cout << "1. Load Registered Learners\n";
+        cout << "2. Display All At-Risk Learners\n";
+        cout << "3. Export At-Risk List to CSV\n";
         cout << "4. Back to Main Menu\n";
         cout << "Choice: ";
         choice = getValidInt();
